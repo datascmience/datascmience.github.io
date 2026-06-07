@@ -99,6 +99,13 @@
             background: white; 
             border-radius: 16px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            overflow: hidden;
+            position: relative;
+        }
+        #qrcode canvas { 
+            position: absolute; 
+            left: -9999px; 
+            top: 0;
         }
 
         .info-section {
@@ -209,12 +216,17 @@
     }
 
     function downloadQR() {
-        const img = document.querySelector('#qrcode img');
-        if(!img) return;
-        const link = document.createElement('a');
-        link.href = img.src;
-        link.download = 'contact-qr.png';
-        link.click();
+        const canvas = document.querySelector('#qrcode canvas');
+        if (!canvas) return;
+
+        canvas.toBlob(function(blob) {
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'contact-qr.png';
+            link.click();
+            URL.revokeObjectURL(url);
+        }, 'image/png');
     }
 
     function clearForm() {
