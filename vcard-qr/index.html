@@ -197,6 +197,10 @@
         });
 
         document.getElementById('downloadBtn').style.display = 'block';
+
+        // Remove the redundant canvas immediately; only the image remains.
+        const canvas = qrDiv.querySelector('canvas');
+        if (canvas) canvas.remove();
     }
 
     function loadParams() {
