@@ -92,16 +92,24 @@
         .btn-clear:hover { color: #aaa; border-color: #444; }
         
         #qrcode { 
-            margin-top: 30px; 
+            margin: 30px auto 0; 
+            width: 200px;
+            height: 200px;
             display: flex; 
             justify-content: center; 
-            padding: 20px;
+            align-items: center;
             background: white; 
             border-radius: 16px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
             overflow: hidden;
+            position: relative;
         }
-        #qrcode canvas { display: none; }
+
+        #qrcode canvas { 
+            position: absolute; 
+            opacity: 0; 
+            pointer-events: none; 
+        }
 
         .info-section {
             margin-top: 30px;
