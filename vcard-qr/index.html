@@ -1,61 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF8">
+    <meta charset="UTF-8">
     <title>Contact QR Generator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- QR Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            background: radial-gradient(circle at top right, #1e1e2e, #121212); 
-            display: flex; 
-            justify-content: center; 
-            padding: 20px; 
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: radial-gradient(circle at top right, #1e1e2e, #121212);
+            display: flex;
+            justify-content: center;
+            padding: 20px;
             margin: 0;
             color: #ffffff;
             min-height: 100vh;
             align-items: center;
         }
-        .container { 
-            background: rgba(30, 30, 30, 0.8); 
+        .container {
+            background: rgba(30, 30, 30, 0.8);
             backdrop-filter: blur(10px);
-            padding: 2rem; 
-            border-radius: 24px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6); 
-            width: 100%; 
-            max-width: 400px; 
+            padding: 2rem;
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            width: 100%;
+            max-width: 400px;
             box-sizing: border-box;
             border: 1px solid rgba(255,255,255,0.1);
         }
-        h2 { 
-            text-align: center; 
-            color: #ffffff; 
-            margin-top: 0; 
+        h2 {
+            text-align: center;
+            color: #ffffff;
+            margin-top: 0;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 2px;
             margin-bottom: 30px;
         }
-        label { 
-            display: block; 
-            margin-top: 15px; 
-            font-size: 11px; 
-            color: #888; 
+        label {
+            display: block;
+            margin-top: 15px;
+            font-size: 11px;
+            color: #888;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-left: 4px;
         }
-        input { 
-            width: 100%; 
-            padding: 12px; 
-            margin-top: 5px; 
-            border: 1px solid #333; 
-            border-radius: 12px; 
-            box-sizing: border-box; 
-            font-size: 16px; 
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 5px;
+            border: 1px solid #333;
+            border-radius: 12px;
+            box-sizing: border-box;
+            font-size: 16px;
             background: #252525;
             color: #fff;
             transition: all 0.3s ease;
@@ -66,20 +65,20 @@
             background: #2a2a2a;
             box-shadow: 0 0 0 3px rgba(255,255,255,0.05);
         }
-        .button-group { 
-            display: flex; 
-            flex-direction: column; 
-            gap: 12px; 
-            margin-top: 30px; 
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 30px;
         }
-        button { 
-            width: 100%; 
-            padding: 14px; 
-            border-radius: 12px; 
-            cursor: pointer; 
-            font-size: 14px; 
-            font-weight: 700; 
-            border: none; 
+        button {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 700;
+            border: none;
             transition: all 0.2s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -90,25 +89,15 @@
         .btn-download:hover { background: #4a4a4a; transform: translateY(-2px); }
         .btn-clear { background: transparent; color: #666; border: 1px solid #333; }
         .btn-clear:hover { color: #aaa; border-color: #444; }
-        
-        #qrcode { 
-            margin: 30px auto 0; 
-            width: 200px;
-            height: 200px;
-            display: flex; 
-            justify-content: center; 
-            align-items: center;
-            background: white; 
+
+        #qrcode {
+            margin-top: 30px;
+            display: none;
+            justify-content: center;
+            padding: 20px;
+            background: white;
             border-radius: 16px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
-            overflow: hidden;
-            position: relative;
-        }
-
-        #qrcode canvas { 
-            position: absolute; 
-            opacity: 0; 
-            pointer-events: none; 
         }
 
         .info-section {
@@ -138,7 +127,7 @@
     <h2>Contact QR</h2>
 
     <label for="name">Full Name</label>
-    <input type="text" id="name" placeholder="Jane Doe" autocorrect="off" autocapitalize="none">
+    <input type="text" id="name" placeholder="Jane Doe" autocorrect="off" autocapitalize="words">
 
     <label for="phone">Phone Number</label>
     <input type="tel" id="phone" placeholder="+1 234 567 890" autocorrect="off">
@@ -147,7 +136,7 @@
     <input type="email" id="email" placeholder="jane@example.com" autocorrect="off" autocapitalize="none">
 
     <label for="org">Company / Organization</label>
-    <input type="text" id="org" placeholder="Acme Corp" autocorrect="off" autocapitalize="none">
+    <input type="text" id="org" placeholder="Acme Corp" autocorrect="off" autocapitalize="words">
 
     <div class="button-group">
         <button class="btn-generate" onclick="generateQR()">Generate QR</button>
@@ -160,12 +149,12 @@
     <div class="info-section">
         <h3>Privacy & Security</h3>
         <p><strong>Local Processing:</strong> Your data never leaves your device. The QR code is generated entirely within your browser.</p>
-        
+
         <h3>How it Works</h3>
         <p><strong>vCard Generation:</strong> This app formats your text into a vCard (.vcf) standard string, recognized by iOS and Android.</p>
-        
+
         <p><strong>Deterministic:</strong> The same input will always produce the exact same QR code.</p>
-        
+
         <h3>About</h3>
         <p>A lightweight, privacy-first wrapper for creating instant digital business cards.</p>
     </div>
@@ -173,28 +162,38 @@
 
 <script>
     function generateQR() {
-        const name = document.getElementById('name').value;
-        const phone = document.getElementById('phone').value;
-        const email = document.getElementById('email').value;
-        const org = document.getElementById('org').value;
+        const name = document.getElementById('name').value.trim();
+        const phone = document.getElementById('phone').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const org = document.getElementById('org').value.trim();
 
         if(!name && !phone) {
             alert("Please enter at least a name or phone number.");
             return;
         }
 
-        const vCard = `BEGIN:VCARD\nVERSION:3.0\nFN:${name}\nORG:${org}\nTEL:${phone}\nEMAIL:${email}\nEND:VCARD`;
-        
+        // Build vCard dynamically to avoid formatting issues and empty fields
+        let vCardParts = ["BEGIN:VCARD", "VERSION:3.0"];
+        if(name) vCardParts.push(`FN:${name}`);
+        if(org) vCardParts.push(`ORG:${org}`);
+        if(phone) vCardParts.push(`TEL:${phone}`);
+        if(email) vCardParts.push(`EMAIL:${email}`);
+        vCardParts.push("END:VCARD");
+
+        // Join with strict CRLF (\r\n) required by vCard standard
+        const vCardString = vCardParts.join("\r\n");
+
         const qrDiv = document.getElementById("qrcode");
-        qrDiv.innerHTML = ""; 
+        qrDiv.innerHTML = "";
+        qrDiv.style.display = 'flex'; // Reveal container
 
         new QRCode(qrDiv, {
-            text: vCard,
+            text: vCardString,
             width: 200,
             height: 200,
             colorDark : "#000000",
             colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.M 
+            correctLevel : QRCode.CorrectLevel.M
         });
 
         document.getElementById('downloadBtn').style.display = 'block';
@@ -219,17 +218,26 @@
     }
 
     function downloadQR() {
+        // Fallback sequence to handle canvas vs img across different mobile systems
         const canvas = document.querySelector('#qrcode canvas');
-        if (!canvas) return;
+        const img = document.querySelector('#qrcode img');
+        let imageSrc = '';
 
-        canvas.toBlob(function(blob) {
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = 'contact-qr.png';
-            link.click();
-            URL.revokeObjectURL(url);
-        }, 'image/png');
+        if (canvas) {
+            imageSrc = canvas.toDataURL("image/png");
+        } else if (img && img.src) {
+            imageSrc = img.src;
+        }
+
+        if(!imageSrc) {
+            alert("Could not generate download link.");
+            return;
+        }
+
+        const link = document.createElement('a');
+        link.href = imageSrc;
+        link.download = 'contact-qr.png';
+        link.click();
     }
 
     function clearForm() {
@@ -237,7 +245,11 @@
         document.getElementById('phone').value = '';
         document.getElementById('email').value = '';
         document.getElementById('org').value = '';
-        document.getElementById('qrcode').innerHTML = '';
+
+        const qrDiv = document.getElementById('qrcode');
+        qrDiv.innerHTML = '';
+        qrDiv.style.display = 'none'; // Hide container again
+
         document.getElementById('downloadBtn').style.display = 'none';
     }
 
