@@ -92,16 +92,17 @@
         .btn-clear:hover { color: #aaa; border-color: #444; }
         
         #qrcode { 
-            margin-top: 30px; 
+            margin: 30px auto 0; 
+            width: 200px;
+            height: 200px;
             display: flex; 
             justify-content: center; 
-            padding: 20px;
+            align-items: center;
             background: white; 
             border-radius: 16px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
             overflow: hidden;
         }
-        #qrcode canvas { display: none; }
 
         .info-section {
             margin-top: 30px;
@@ -190,6 +191,10 @@
         });
 
         document.getElementById('downloadBtn').style.display = 'block';
+
+        // Remove the redundant canvas immediately; only the image remains.
+        const canvas = qrDiv.querySelector('canvas');
+        if (canvas) canvas.remove();
     }
 
     function loadParams() {
@@ -210,18 +215,23 @@
         }
     }
 
-    function downloadQR() {
-        const canvas = document.querySelector('#qrcode canvas');
-        if (!canvas) return;
+    async function downloadQR() {
+        const img = document.querySelector('#qrcode img');
+        if (!img) return;
 
-        canvas.toBlob(function(blob) {
+        try {
+            const response = await fetch(img.src);
+            const blob = await response.blob();
             const url = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = url;
             link.download = 'contact-qr.png';
             link.click();
             URL.revokeObjectURL(url);
-        }, 'image/png');
+        } catch (e) {
+            console.error("Download failed:", e);
+            alert("Could not download image. Please try long-pressing the QR code to save it.");
+        }
     }
 
     function clearForm() {
