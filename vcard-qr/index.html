@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Contact QR Generator</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
     <style>
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -90,7 +90,7 @@
         .btn-clear { background: transparent; color: #666; border: 1px solid #333; }
         .btn-clear:hover { color: #aaa; border-color: #444; }
 
-        #qrcode {
+        #qrcode-container {
             margin-top: 30px;
             display: none;
             justify-content: center;
@@ -144,7 +144,9 @@
         <button class="btn-clear" onclick="clearForm()">Clear</button>
     </div>
 
-    <div id="qrcode"></div>
+    <div id="qrcode-container">
+        <canvas id="qr-canvas"></canvas>
+    </div>
 
     <div class="info-section">
         <h3>Privacy & Security</h3>
@@ -161,6 +163,8 @@
 </div>
 
 <script>
+    let qrInstance = null;
+
     function generateQR() {
         const name = document.getElementById('name').value.trim();
         const phone = document.getElementById('phone').value.trim();
@@ -172,7 +176,6 @@
             return;
         }
 
-        // Build vCard dynamically to avoid formatting issues and empty fields
         let vCardParts = ["BEGIN:VCARD", "VERSION:3.0"];
         if(name) vCardParts.push(`FN:${name}`);
         if(org) vCardParts.push(`ORG:${org}`);
@@ -180,27 +183,23 @@
         if(email) vCardParts.push(`EMAIL:${email}`);
         vCardParts.push("END:VCARD");
 
-        // Join with strict CRLF (\r\n) required by vCard standard
         const vCardString = vCardParts.join("\r\n");
 
-        const qrDiv = document.getElementById("qrcode");
-        qrDiv.innerHTML = "";
-        qrDiv.style.display = 'flex'; // Reveal container
+        document.getElementById("qrcode-container").style.display = 'flex';
 
-        new QRCode(qrDiv, {
-            text: vCardString,
-            width: 200,
-            height: 200,
-            colorDark : "#000000",
-            colorLight : "#ffffff",
-            correctLevel : QRCode.CorrectLevel.M
-        });
+        // QRious acts on a native canvas element directly and synchronously
+        if (!qrInstance) {
+            qrInstance = new QRious({
+                element: document.getElementById('qr-canvas'),
+                size: 200,
+                level: 'M',
+                value: vCardString
+            });
+        } else {
+            qrInstance.value = vCardString;
+        }
 
         document.getElementById('downloadBtn').style.display = 'block';
-
-        // Remove the redundant canvas immediately; only the image remains.
-        const canvas = qrDiv.querySelector('canvas');
-        if (canvas) canvas.remove();
     }
 
     function loadParams() {
@@ -222,26 +221,22 @@
     }
 
     function downloadQR() {
-        // Fallback sequence to handle canvas vs img across different mobile systems
-        const canvas = document.querySelector('#qrcode canvas');
-        const img = document.querySelector('#qrcode img');
-        let imageSrc = '';
+        const canvas = document.getElementById('qr-canvas');
+        if (!canvas) return;
 
-        if (canvas) {
-            imageSrc = canvas.toDataURL("image/png");
-        } else if (img && img.src) {
-            imageSrc = img.src;
+        try {
+            const imageSrc = canvas.toDataURL("image/png");
+            const link = document.createElement('a');
+            link.href = imageSrc;
+            link.download = 'contact-qr.png';
+
+            // Appending ensures all modern mobile rendering layers accept the target event payload
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        } catch (e) {
+            alert("Your browser security settings are blocking the file save action.");
         }
-
-        if(!imageSrc) {
-            alert("Could not generate download link.");
-            return;
-        }
-
-        const link = document.createElement('a');
-        link.href = imageSrc;
-        link.download = 'contact-qr.png';
-        link.click();
     }
 
     function clearForm() {
@@ -250,10 +245,7 @@
         document.getElementById('email').value = '';
         document.getElementById('org').value = '';
 
-        const qrDiv = document.getElementById('qrcode');
-        qrDiv.innerHTML = '';
-        qrDiv.style.display = 'none'; // Hide container again
-
+        document.getElementById('qrcode-container').style.display = 'none';
         document.getElementById('downloadBtn').style.display = 'none';
     }
 
