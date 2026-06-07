@@ -9,22 +9,25 @@
     <style>
         body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; 
-            background: #121212; 
+            background: radial-gradient(circle at top right, #1e1e2e, #121212); 
             display: flex; 
             justify-content: center; 
             padding: 20px; 
             margin: 0;
             color: #ffffff;
+            min-height: 100vh;
+            align-items: center;
         }
         .container { 
-            background: #1e1e1e; 
+            background: rgba(30, 30, 30, 0.8); 
+            backdrop-filter: blur(10px);
             padding: 2rem; 
-            border-radius: 16px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); 
+            border-radius: 24px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6); 
             width: 100%; 
             max-width: 400px; 
             box-sizing: border-box;
-            border: 1px solid #333;
+            border: 1px solid rgba(255,255,255,0.1);
         }
         h2 { 
             text-align: center; 
@@ -32,81 +35,85 @@
             margin-top: 0; 
             font-weight: 800;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
         }
         label { 
             display: block; 
             margin-top: 15px; 
-            font-size: 13px; 
-            color: #aaa; 
-            font-weight: 600;
+            font-size: 11px; 
+            color: #888; 
+            font-weight: 700;
             text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-left: 4px;
         }
         input { 
             width: 100%; 
             padding: 12px; 
             margin-top: 5px; 
-            border: 1px solid #444; 
-            border-radius: 8px; 
+            border: 1px solid #333; 
+            border-radius: 12px; 
             box-sizing: border-box; 
             font-size: 16px; 
-            background: #2c2c2c;
+            background: #252525;
             color: #fff;
-            transition: border 0.2s;
+            transition: all 0.3s ease;
         }
         input:focus {
             outline: none;
-            border: 1px solid #fff;
-            background: #333;
+            border: 1px solid #666;
+            background: #2a2a2a;
+            box-shadow: 0 0 0 3px rgba(255,255,255,0.05);
         }
         .button-group { 
             display: flex; 
             flex-direction: column; 
-            gap: 10px; 
-            margin-top: 25px; 
+            gap: 12px; 
+            margin-top: 30px; 
         }
         button { 
             width: 100%; 
             padding: 14px; 
-            border-radius: 8px; 
+            border-radius: 12px; 
             cursor: pointer; 
-            font-size: 15px; 
-            font-weight: bold; 
+            font-size: 14px; 
+            font-weight: 700; 
             border: none; 
             transition: all 0.2s ease;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
         .btn-generate { background: #ffffff; color: #000000; }
-        .btn-generate:hover { background: #cccccc; transform: translateY(-1px); }
-        .btn-download { background: #444444; color: #ffffff; display: none; }
-        .btn-download:hover { background: #555555; transform: translateY(-1px); }
-        .btn-clear { background: #333333; color: #aaa; }
-        .btn-clear:hover { background: #444444; color: #fff; }
+        .btn-generate:hover { background: #e0e0e0; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(255,255,255,0.1); }
+        .btn-download { background: #3a3a3a; color: #ffffff; display: none; }
+        .btn-download:hover { background: #4a4a4a; transform: translateY(-2px); }
+        .btn-clear { background: transparent; color: #666; border: 1px solid #333; }
+        .btn-clear:hover { color: #aaa; border-color: #444; }
         
         #qrcode { 
-            margin-top: 25px; 
+            margin-top: 30px; 
             display: flex; 
             justify-content: center; 
-            padding: 15px;
+            padding: 20px;
             background: white; 
-            border-radius: 12px;
+            border-radius: 16px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
         }
 
-        /* Footer/Disclaimer Styles */
         .info-section {
             margin-top: 30px;
             padding-top: 20px;
             border-top: 1px solid #333;
             font-size: 12px;
-            color: #888;
+            color: #666;
             line-height: 1.6;
         }
         .info-section h3 {
             font-size: 11px;
-            color: #bbb;
+            color: #888;
             text-transform: uppercase;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
             letter-spacing: 0.5px;
         }
         .info-section p {
@@ -140,15 +147,14 @@
 
     <div id="qrcode"></div>
 
-    <!-- Info & Disclaimer Section -->
     <div class="info-section">
         <h3>Privacy & Security</h3>
-        <p><strong>Local Processing:</strong> Your data never leaves your device. The QR code is generated entirely within your browser; no data is sent to a server and no logging is performed.</p>
+        <p><strong>Local Processing:</strong> Your data never leaves your device. The QR code is generated entirely within your browser.</p>
         
-        <h3>How it Works</h3>">
-        <p><strong>vCard Generation:</strong> This app formats your text into a vCard (.vcf) standard string. This is a globally recognized format that tells your phone's contact app exactly where the name, phone, and email belong.</p>
+        <h3>How it Works</h3>
+        <p><strong>vCard Generation:</strong> This app formats your text into a vCard (.vcf) standard string, recognized by iOS and Android.</p>
         
-        <p><strong>Deterministic:</strong> QR generation is deterministic. This means the same input will always produce the exact same QR code image, regardless of when or where it is generated.</p>
+        <p><strong>Deterministic:</strong> The same input will always produce the exact same QR code.</p>
         
         <h3>About</h3>
         <p>A lightweight, privacy-first wrapper for creating instant digital business cards.</p>
@@ -184,6 +190,24 @@
         document.getElementById('downloadBtn').style.display = 'block';
     }
 
+    function loadParams() {
+        const params = new URLSearchParams(window.location.search);
+        const fields = ['name', 'phone', 'email', 'org'];
+        let hasParams = false;
+
+        fields.forEach(field => {
+            const value = params.get(field);
+            if (value) {
+                document.getElementById(field).value = decodeURIComponent(value);
+                hasParams = true;
+            }
+        });
+
+        if (hasParams) {
+            generateQR();
+        }
+    }
+
     function downloadQR() {
         const img = document.querySelector('#qrcode img');
         if(!img) return;
@@ -201,6 +225,8 @@
         document.getElementById('qrcode').innerHTML = '';
         document.getElementById('downloadBtn').style.display = 'none';
     }
+
+    window.onload = loadParams;
 </script>
 
 </body>
