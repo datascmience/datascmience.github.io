@@ -98,6 +98,13 @@
             background: white;
             border-radius: 16px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        #qr-canvas {
+            max-width: 100%;
+            height: auto;
+            display: block;
         }
 
         .info-section {
@@ -225,13 +232,13 @@
         if (!qrInstance) {
             qrInstance = new QRious({
                 element: document.getElementById('qr-canvas'),
-                size: 400,
+                size: 300,
                 level: 'M',
-                padding: 50,
+                padding: 75,
                 value: vCardString
             });
         } else {
-            qrInstance.set({ value: vCardString, size: 400, padding: 50 });
+            qrInstance.set({ value: vCardString, size: 300, padding: 75 });
         }
 
         document.getElementById('downloadBtn').style.display = 'block';
