@@ -140,7 +140,7 @@
 
     <div class="button-group">
         <button class="btn-generate" onclick="generateQR()">Generate QR</button>
-        <button id="downloadBtn" class="btn-download" onclick="downloadQR()">Download PNG</button>
+        <button id="downloadBtn" class="btn-download" onclick="downloadQR()">Save QR</button>
         <button class="btn-clear" onclick="clearForm()">Clear</button>
     </div>
 
@@ -254,23 +254,37 @@
         }
     }
 
-    function downloadQR() {
+    async function downloadQR() {
         const canvas = document.getElementById('qr-canvas');
         if (!canvas) return;
 
-        try {
-            const imageSrc = canvas.toDataURL("image/png");
-            const link = document.createElement('a');
-            link.href = imageSrc;
-            link.download = 'contact-qr.png';
+        canvas.toBlob(async (blob) => {
+            const file = new File([blob], 'contact-qr.png', { type: 'image/png' });
 
-            // Appending ensures all modern mobile rendering layers accept the target event payload
+            // Try native share sheet (iOS/Android) -> allows "Save to Photos"
+            const canShare = (() => {
+                try { return navigator.canShare({ files: [file] }); } catch { return false; }
+            })();
+
+            if (navigator.share && canShare) {
+                try {
+                    await navigator.share({ files: [file], title: 'Contact QR' });
+                    return;
+                } catch (err) {
+                    if (err.name !== 'AbortError') console.error('Share failed:', err);
+                }
+            }
+
+            // Desktop fallback: standard download
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'contact-qr.png';
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-        } catch (e) {
-            alert("Your browser security settings are blocking the file save action.");
-        }
+            URL.revokeObjectURL(url);
+        }, 'image/png');
     }
 
     function clearForm() {
