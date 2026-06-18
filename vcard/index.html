@@ -176,9 +176,27 @@
             return;
         }
 
+        // Normalize Apple's smart/curly quotes and other Unicode punctuation to ASCII
+        const sanitize = (s) => s
+            .replace(/\u201C/g, '"').replace(/\u201D/g, '"')
+            .replace(/\u2018/g, "'").replace(/\u2019/g, "'")
+            .replace(/\u2013/g, '-').replace(/\u2014/g, '--')
+            .replace(/\u2026/g, '...');
+
+        const cleanName = sanitize(name);
+        const cleanOrg = sanitize(org);
+
         let vCardParts = ["BEGIN:VCARD", "VERSION:3.0"];
-        if(name) vCardParts.push(`FN:${name}`);
-        if(org) vCardParts.push(`ORG:${org}`);
+        if(cleanName) {
+            // Structured N field is required by iOS to separate name from ORG.
+            // Format: N:family;given;additional;prefix;suffix
+            const parts = cleanName.split(/[\s,]+/).filter(Boolean);
+            const family = parts.length > 1 ? parts[parts.length - 1] : '';
+            const given = parts.length > 1 ? parts.slice(0, -1).join(' ') : cleanName;
+            vCardParts.push(`N:${family};${given};;;`);
+            vCardParts.push(`FN:${cleanName}`);
+        }
+        if(cleanOrg) vCardParts.push(`ORG:${cleanOrg}`);
         if(phone) vCardParts.push(`TEL:${phone}`);
         if(email) vCardParts.push(`EMAIL:${email}`);
         vCardParts.push("END:VCARD");
