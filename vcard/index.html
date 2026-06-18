@@ -225,12 +225,13 @@
         if (!qrInstance) {
             qrInstance = new QRious({
                 element: document.getElementById('qr-canvas'),
-                size: 200,
+                size: 400,
                 level: 'M',
+                padding: 50,
                 value: vCardString
             });
         } else {
-            qrInstance.value = vCardString;
+            qrInstance.set({ value: vCardString, size: 400, padding: 50 });
         }
 
         document.getElementById('downloadBtn').style.display = 'block';
